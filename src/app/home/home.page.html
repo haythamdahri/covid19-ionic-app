@@ -1,11 +1,13 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title> <ion-icon name="home-outline"></ion-icon> Home </ion-title>
-  
+
     <ion-buttons slot="end">
+      <ion-label color="dark}"
+        >{{ tableStyle == 'dark' ? 'Dark' : 'Light' }}</ion-label
+      >
       <ion-toggle (click)="switchStyle()" color="dark"></ion-toggle>
     </ion-buttons>
-
   </ion-toolbar>
 </ion-header>
 
@@ -20,6 +22,10 @@
     <ion-grid>
       <ion-row>
         <ion-col>
+          <!-- Searchbar with cancel button always shown -->
+          <ion-searchbar placeholder="Search country" animated (ionInput)="onCountriesFilter($event)" size="12"></ion-searchbar>
+        </ion-col>
+        <ion-col size="12">
           <ngx-datatable
             [ngClass]="tableStyle"
             [rows]="countriesData"

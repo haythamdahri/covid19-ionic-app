@@ -1,4 +1,4 @@
-import { CountriesDataService } from "./../shared/countries-data.service";
+import { CountriesDataService } from "../shared/countries-data.service";
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { Title } from "@angular/platform-browser";
 import CountryDataModel from "../models/country-data.model";
@@ -6,14 +6,15 @@ import { Subscription } from "rxjs";
 import { ToastController, LoadingController } from "@ionic/angular";
 
 @Component({
-  selector: "app-tab1",
-  templateUrl: "tab1.page.html",
-  styleUrls: ["tab1.page.scss"]
+  selector: "app-home",
+  templateUrl: "home.page.html",
+  styleUrls: ["home.page.scss"]
 })
-export class Tab1Page implements OnInit, OnDestroy {
+export class HomePage {
   countriesData: CountryDataModel[] = [];
+  baseCountriesData: CountryDataModel[] = [];
   countriesDataSubscription: Subscription;
-  tableStyle: string = 'bootstrap';
+  tableStyle: string = "bootstrap";
   isError: boolean = false;
   isLoading: boolean = true;
 
@@ -24,10 +25,12 @@ export class Tab1Page implements OnInit, OnDestroy {
     private loadingController: LoadingController
   ) {}
 
-  async ngOnInit() {
+  async ionViewWillEnter() {
+    // Initialize data
+    this.countriesData = [];
     // Show loading
     const loading = await this.loadingController.create({
-      message: 'Please wait...'
+      message: "Please wait..."
     });
     await loading.present();
     // Set page title
@@ -38,6 +41,7 @@ export class Tab1Page implements OnInit, OnDestroy {
       .subscribe(
         countriesData => {
           this.countriesData = countriesData;
+          this.baseCountriesData = countriesData;
         },
         error => {
           this.presentToastWithOptions("An error occurred");
@@ -52,8 +56,8 @@ export class Tab1Page implements OnInit, OnDestroy {
       );
   }
 
-  ngOnDestroy() {
-    if( this.countriesDataSubscription != null ) {
+  ionViewDidLeave() {
+    if (this.countriesDataSubscription != null) {
       this.countriesDataSubscription.unsubscribe();
     }
     this.countriesData = [];
@@ -86,10 +90,32 @@ export class Tab1Page implements OnInit, OnDestroy {
   }
 
   switchStyle() {
-    if( this.tableStyle == 'dark' ) {
-      this.tableStyle = 'bootstrap';
+    if (this.tableStyle == "dark") {
+      this.tableStyle = "bootstrap";
     } else {
-      this.tableStyle = 'dark';
+      this.tableStyle = "dark";
+    }
+  }
+
+  // Filter countries based on user input
+  async onCountriesFilter(event: any) {
+    const value = event.target.value;
+    // Filter values
+    if( value != "" ) {
+      this.countriesData = [
+        ...this.baseCountriesData.filter(
+          countryData =>
+            (countryData.country.toLowerCase().indexOf(value.toLowerCase().trim()) !== -1 )
+        )
+      ];
+    } else {
+      // Show loading
+      const loading = await this.loadingController.create({
+        message: "Please wait..."
+      });
+      await loading.present();
+      this.countriesData= [...this.baseCountriesData];
+      await loading.dismiss();
     }
   }
 }
