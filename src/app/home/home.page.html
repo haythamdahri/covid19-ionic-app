@@ -6,7 +6,7 @@
       <ion-label color="dark}"
         >{{ tableStyle == 'dark' ? 'Dark' : 'Light' }}</ion-label
       >
-      <ion-toggle (click)="switchStyle()" color="dark"></ion-toggle>
+      <ion-toggle [checked]="tableStyle == 'dark' ? true : false" (click)="switchStyle()" color="dark"></ion-toggle>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>

@@ -61,6 +61,8 @@ export class HomePage {
       this.countriesDataSubscription.unsubscribe();
     }
     this.countriesData = [];
+    // Reset mode
+    this.tableStyle = 'bootstrap';
   }
 
   async presentToastWithOptions(message: string) {
